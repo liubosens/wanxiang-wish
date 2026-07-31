@@ -1,0 +1,18 @@
+{
+  "poolId": "b1_silver_v1",
+  "name": "银宝箱",
+  "sceneType": "B1",
+  "presentation": "chest",
+  "chestTier": "silver",
+  "cost": { "itemId": "chest_key", "amount": 3 },
+  "lootTables": {
+    "silver": [
+      { "itemId": "mat_iron", "name": "陨铁", "rarity": "R", "weight": 40 },
+      { "itemId": "mat_shard_sr", "name": "SR 碎片", "rarity": "SR", "weight": 45 },
+      { "itemId": "mat_shard_ssr", "name": "SSR 碎片", "rarity": "SSR", "weight": 15 }
+    ]
+  },
+  "ratePublic": {
+    "notes": ["银箱：提高 SR/SSR 碎片权重。"]
+  }
+}

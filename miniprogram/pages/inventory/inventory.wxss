@@ -1,0 +1,2 @@
+.title{font-size:34rpx;font-weight:600}
+.row{padding:18rpx 28rpx;margin:0 24rpx 12rpx;border-radius:16rpx;background:rgba(255,255,255,.04)}

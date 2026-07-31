@@ -1,0 +1,18 @@
+<view class="card" wx:if="{{pool}}">
+  <view class="title">{{pool.name}}</view>
+  <view class="muted">{{pityText}}</view>
+  <view class="muted">余额：祈愿石 {{wallet.wish_stone}}</view>
+  <view class="actions">
+    <button class="btn-primary" size="mini" loading="{{drawing}}" bindtap="drawOne">单抽</button>
+    <button class="btn-primary" size="mini" loading="{{drawing}}" bindtap="drawTen">十连</button>
+    <button class="btn-ghost" size="mini" bindtap="openRates">公示</button>
+  </view>
+</view>
+
+<view class="card" wx:if="{{results.length}}">
+  <view class="title">结果</view>
+  <view wx:for="{{results}}" wx:key="index" class="row">
+    <text class="rarity-{{item.rarity}}">[{{item.rarity}}]</text>
+    <text> {{item.name}}</text>
+  </view>
+</view>

@@ -1,0 +1,40 @@
+{
+  "poolId": "a1_standard_v1",
+  "name": "星尘常驻祈愿",
+  "sceneType": "A1",
+  "presentation": "banner_card",
+  "cost": { "itemId": "wish_stone", "amount": 1 },
+  "multi": { "ten": true, "tenCost": 10, "tenGuaranteeRarity": "SR" },
+  "rarities": [
+    { "id": "SSR", "weight": 60, "softPityStart": 74, "softPityStep": 600, "hardPity": 90 },
+    { "id": "SR", "weight": 510, "hardPity": 10 },
+    { "id": "R", "weight": 9430 }
+  ],
+  "up": { "enabled": false },
+  "lootTables": {
+    "SSR": [
+      { "itemId": "ssr_nova", "name": "新星祈使", "weight": 1 },
+      { "itemId": "ssr_eclipse", "name": "蚀月旅人", "weight": 1 }
+    ],
+    "SR": [
+      { "itemId": "sr_comet", "name": "彗星信使", "weight": 1 },
+      { "itemId": "sr_aurora", "name": "极光侍从", "weight": 1 },
+      { "itemId": "sr_meteor", "name": "流星剑士", "weight": 1 }
+    ],
+    "R": [
+      { "itemId": "r_dustling", "name": "星尘精灵", "weight": 3 },
+      { "itemId": "r_pebble", "name": "碎星石", "weight": 3 },
+      { "itemId": "r_candle", "name": "微光烛", "weight": 2 }
+    ]
+  },
+  "ratePublic": {
+    "SSR": "0.6%",
+    "SR": "5.1%",
+    "R": "94.3%",
+    "notes": [
+      "SSR 软保底自第 74 抽起逐步提升，第 90 抽硬保底。",
+      "SR 最多 10 抽必出。",
+      "十连至少含 1 个 SR 或以上。"
+    ]
+  }
+}

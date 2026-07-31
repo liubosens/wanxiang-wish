@@ -1,0 +1,19 @@
+{
+  "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "coverView": true,
+    "showShadowRootInWxmlPanel": true
+  },
+  "appid": "touristappid",
+  "projectname": "wanxiang-wish",
+  "compileType": "miniprogram",
+  "libVersion": "3.5.5",
+  "condition": {},
+  "cloudfunctionTemplateRoot": ""
+}

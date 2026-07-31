@@ -1,0 +1,21 @@
+<view class="card">
+  <view class="title">分级宝箱</view>
+  <view class="muted">箱钥余额：{{wallet.chest_key}}</view>
+</view>
+
+<view class="card" wx:for="{{chests}}" wx:key="poolId">
+  <view class="title">{{item.name}}</view>
+  <view class="muted">消耗箱钥 ×{{item.cost}}</view>
+  <view class="actions">
+    <button class="btn-primary" size="mini" loading="{{drawing}}" data-pool-id="{{item.poolId}}" bindtap="openChest">开启</button>
+    <button class="btn-ghost" size="mini" data-pool-id="{{item.poolId}}" bindtap="openRates">公示</button>
+  </view>
+</view>
+
+<view class="card" wx:if="{{results.length}}">
+  <view class="title">获得</view>
+  <view wx:for="{{results}}" wx:key="index" class="row">
+    <text class="rarity-{{item.rarity}}">[{{item.rarity}}]</text>
+    <text> {{item.name}}</text>
+  </view>
+</view>

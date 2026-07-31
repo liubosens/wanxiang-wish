@@ -1,0 +1,20 @@
+.hero .brand {
+  font-size: 48rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+}
+.tagline {
+  margin-top: 8rpx;
+  color: #7dd3fc;
+}
+.wallet {
+  margin-top: 20rpx;
+}
+.scene-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+.rates {
+  margin: 24rpx 48rpx 48rpx;
+}

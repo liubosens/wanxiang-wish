@@ -1,0 +1,13 @@
+<view class="card">
+  <picker mode="selector" range="{{poolOptions}}" range-key="name" bindchange="onPick">
+    <view>当前卡池：{{pool.name}}（点击切换）</view>
+  </picker>
+</view>
+
+<view class="card" wx:if="{{pool}}">
+  <view class="title">{{pool.name}}</view>
+  <view class="muted" wx:if="{{pool.ratePublic.SSR}}">SSR {{pool.ratePublic.SSR}}</view>
+  <view class="muted" wx:if="{{pool.ratePublic.SR}}">SR {{pool.ratePublic.SR}}</view>
+  <view class="muted" wx:if="{{pool.ratePublic.R}}">R {{pool.ratePublic.R}}</view>
+  <view class="note" wx:for="{{pool.ratePublic.notes}}" wx:key="*this">· {{item}}</view>
+</view>

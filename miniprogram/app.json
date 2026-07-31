@@ -1,0 +1,46 @@
+{
+  "pages": [
+    "pages/gallery/gallery",
+    "pages/scene-banner/scene-banner",
+    "pages/scene-chest/scene-chest",
+    "pages/scene-machine/scene-machine",
+    "pages/inventory/inventory",
+    "pages/history/history",
+    "pages/rates/rates",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "navigationBarTitleText": "万象祈愿",
+    "navigationBarBackgroundColor": "#0B1220",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#0B1220",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#8B93A7",
+    "selectedColor": "#7DD3FC",
+    "backgroundColor": "#0B1220",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/gallery/gallery",
+        "text": "概率馆"
+      },
+      {
+        "pagePath": "pages/inventory/inventory",
+        "text": "背包"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "记录"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

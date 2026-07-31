@@ -1,0 +1,12 @@
+.stage{text-align:center}
+.title{font-size:36rpx;font-weight:600;margin-bottom:16rpx}
+.wheel{
+  width:240rpx;height:240rpx;margin:32rpx auto;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:72rpx;
+  background:conic-gradient(#38bdf8,#818cf8,#fbbf24,#38bdf8);
+  box-shadow:0 0 40rpx rgba(56,189,248,.35);
+}
+.wheel.spin{animation:spin 0.9s ease-out}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(720deg)}}
+.actions{display:flex;gap:16rpx;justify-content:center;margin-top:24rpx;flex-wrap:wrap}

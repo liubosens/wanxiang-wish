@@ -1,0 +1,14 @@
+<view class="card stage">
+  <view class="title">星轨转盘</view>
+  <view class="wheel {{spinning ? 'spin' : ''}}">✦</view>
+  <view class="muted">机台币：{{wallet.machine_coin}}</view>
+  <view class="actions">
+    <button class="btn-primary" loading="{{spinning}}" bindtap="spin">转动一次</button>
+    <button class="btn-ghost" bindtap="openRates">公示</button>
+  </view>
+</view>
+
+<view class="card" wx:if="{{result}}">
+  <view class="title">停在</view>
+  <view class="rarity-{{result.rarity}}">{{result.name}}</view>
+</view>

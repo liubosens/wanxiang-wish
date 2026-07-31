@@ -1,0 +1,21 @@
+{
+  "poolId": "c2_roulette_v1",
+  "name": "星轨转盘",
+  "sceneType": "C2",
+  "presentation": "roulette",
+  "cost": { "itemId": "machine_coin", "amount": 1 },
+  "sectors": [
+    { "id": "s1", "itemId": "wish_stone", "name": "祈愿石×1", "rarity": "R", "weight": 30 },
+    { "id": "s2", "itemId": "chest_key", "name": "箱钥×1", "rarity": "R", "weight": 25 },
+    { "id": "s3", "itemId": "dust", "name": "星尘币×50", "rarity": "R", "weight": 20 },
+    { "id": "s4", "itemId": "mat_shard_sr", "name": "SR 碎片", "rarity": "SR", "weight": 15 },
+    { "id": "s5", "itemId": "machine_coin", "name": "机台币×2", "rarity": "R", "weight": 8 },
+    { "id": "s6", "itemId": "ssr_eclipse", "name": "蚀月旅人", "rarity": "SSR", "weight": 2 }
+  ],
+  "ratePublic": {
+    "notes": [
+      "转盘按扇区权重抽取。",
+      "SSR 扇区展示权重约 2%。"
+    ]
+  }
+}

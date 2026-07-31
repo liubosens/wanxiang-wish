@@ -1,0 +1,19 @@
+<view class="card">
+  <view class="title">万象祈愿</view>
+  <view class="muted">版本 {{version}} · 模拟币 MVP</view>
+</view>
+
+<view class="card">
+  <view>祈愿石 {{wallet.wish_stone}}</view>
+  <view>箱钥 {{wallet.chest_key}}</view>
+  <view>机台币 {{wallet.machine_coin}}</view>
+  <view>星尘币 {{wallet.dust}}</view>
+  <view class="muted">累计抽取 {{meta.totalDraws || 0}} 次</view>
+</view>
+
+<button class="btn-primary block" bindtap="claimDaily">领取每日补给</button>
+<button class="btn-ghost block" bindtap="resetSave">重置本地存档</button>
+
+<view class="card muted">
+  隐私提示：MVP 数据仅存本机。开通云开发后可同步账号与流水。本项目为概率机制演示，非真金赌博。
+</view>

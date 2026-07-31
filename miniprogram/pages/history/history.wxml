@@ -1,0 +1,11 @@
+<view class="card" wx:if="{{!list.length}}">
+  <view class="muted">暂无记录</view>
+</view>
+
+<view class="card row" wx:for="{{list}}" wx:key="id">
+  <view>
+    <text class="rarity-{{item.rarity}}">[{{item.rarity}}]</text>
+    <text> {{item.name}}</text>
+  </view>
+  <view class="muted">{{item.poolName}}</view>
+</view>

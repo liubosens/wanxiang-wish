@@ -1,0 +1,18 @@
+{
+  "poolId": "b1_gold_v1",
+  "name": "金宝箱",
+  "sceneType": "B1",
+  "presentation": "chest",
+  "chestTier": "gold",
+  "cost": { "itemId": "chest_key", "amount": 10 },
+  "lootTables": {
+    "gold": [
+      { "itemId": "mat_shard_sr", "name": "SR 碎片×5", "rarity": "SR", "weight": 50 },
+      { "itemId": "mat_shard_ssr", "name": "SSR 碎片×2", "rarity": "SSR", "weight": 35 },
+      { "itemId": "ssr_nova", "name": "新星祈使（完整）", "rarity": "SSR", "weight": 15 }
+    ]
+  },
+  "ratePublic": {
+    "notes": ["金箱：高价值碎片，小概率完整 SSR。"]
+  }
+}

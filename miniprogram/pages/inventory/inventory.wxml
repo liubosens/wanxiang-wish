@@ -1,0 +1,13 @@
+<view class="card">
+  <view class="title">背包</view>
+  <view class="muted">图鉴已点亮 {{codexCount}} 种</view>
+</view>
+
+<view class="card" wx:if="{{!items.length}}">
+  <view class="muted">还没有物品，去概率馆抽一次吧。</view>
+</view>
+
+<view class="card row" wx:for="{{items}}" wx:key="itemId">
+  <text class="rarity-{{item.rarity}}">[{{item.rarity}}]</text>
+  <text> {{item.name}} ×{{item.count}}</text>
+</view>
