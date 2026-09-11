@@ -3,6 +3,12 @@ main = "src/index.ts"
 compatibility_date = "2024-11-01"
 account_id = "d1b7a3b3075f7e9ffe20629f07594286"
 
+# 自定义域名路由：走 liubs.xyz（账号内已激活 zone），绕开 workers.dev。
+# Cloudflare 会自动创建 DNS 记录与证书。
+routes = [
+  { pattern = "wish.liubs.xyz", custom_domain = true }
+]
+
 # JWT_SECRET is a secret. For local dev set it in .dev.vars (see .dev.vars.example).
 # For production run: wrangler secret put JWT_SECRET
 # Do NOT commit the real secret.
@@ -10,10 +16,8 @@ account_id = "d1b7a3b3075f7e9ffe20629f07594286"
 [[d1_databases]]
 binding = "DB"
 database_name = "wanxiang-wish"
-# Replace with the id from: wrangler d1 create wanxiang-wish
 database_id = "3b19c124-d140-42c3-96c5-76a925dd2d65"
 
 [[kv_namespaces]]
 binding = "KV"
-# Replace with the id from: wrangler kv namespace create wanxiang-wish-leaderboard
 id = "45c9eb877f3b4f3fa3e62043b5046f36"
