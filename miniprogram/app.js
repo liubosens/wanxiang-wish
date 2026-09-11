@@ -1,7 +1,7 @@
 App({
   globalData: {
-    useCloud: false,
-    envId: "",
+    useCloud: true,
+    envId: "cloud1-d7glyd2nj5d161932",
     version: "0.1.0-mvp"
   },
   onLaunch() {

@@ -5,9 +5,7 @@ Page({
   data: {
     wallet: {},
     chests: [
-      { poolId: "b1_copper_v1", name: "铜宝箱", cost: 1 },
-      { poolId: "b1_silver_v1", name: "银宝箱", cost: 3 },
-      { poolId: "b1_gold_v1", name: "金宝箱", cost: 10 }
+      { poolId: "b1_sangokushi_v1", name: "三国杀·全服博弈", cost: 1 }
     ],
     results: [],
     drawing: false

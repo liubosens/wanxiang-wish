@@ -1,6 +1,7 @@
 <view class="card">
   <view class="title">背包</view>
-  <view class="muted">图鉴已点亮 {{codexCount}} 种</view>
+  <view class="muted">图鉴已点亮 {{codexCount}} 种 ｜ 战力 {{power}}</view>
+  <view class="muted">碎片 {{wallet.fragments}} ｜ 进阶石 {{wallet.stone}}</view>
 </view>
 
 <view class="card" wx:if="{{!items.length}}">
@@ -8,6 +9,12 @@
 </view>
 
 <view class="card row" wx:for="{{items}}" wx:key="itemId">
-  <text class="rarity-{{item.rarity}}">[{{item.rarity}}]</text>
-  <text> {{item.name}} ×{{item.count}}</text>
+  <view class="info">
+    <text class="rarity-{{item.rarity}}">[{{item.rarity}}]</text>
+    <text> {{item.name}} ★{{item.star}}</text>
+    <view class="muted small">{{item.nextCostText}}</view>
+  </view>
+  <button class="btn-up {{item.canUpgrade ? '' : 'off'}}" size="mini" disabled="{{!item.canUpgrade}}" data-id="{{item.itemId}}" bindtap="tapUpgrade">
+    升星
+  </button>
 </view>

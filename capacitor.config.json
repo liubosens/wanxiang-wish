@@ -1,0 +1,12 @@
+{
+  "appId": "com.liubs.wanxiangwish",
+  "appName": "万象祈愿",
+  "webDir": "web",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0b1220"
+  }
+}

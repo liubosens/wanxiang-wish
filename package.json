@@ -1,0 +1,21 @@
+{
+  "name": "wanxiang-wish-app",
+  "version": "0.2.0",
+  "private": true,
+  "description": "万象祈愿 Android 壳（Capacitor）。前端源在 web/，本目录只负责打包成 APK。",
+  "scripts": {
+    "build:pools": "node web/tools/build-pools.mjs",
+    "serve": "npx --yes http-server web -p 5173 -c-1",
+    "sync": "cap sync android",
+    "open:android": "cap open android",
+    "apk:debug": "cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "wanxiang-wish-app": "file:"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0"
+  }
+}

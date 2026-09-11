@@ -1,0 +1,18 @@
+<view class="card">
+  <view class="title">排行榜 · 战力榜</view>
+  <view class="muted">你的排名 #{{me.rank}} ｜ 战力 {{me.power}}</view>
+</view>
+
+<view class="card" wx:if="{{loading}}">
+  <view class="muted">加载中…</view>
+</view>
+
+<view class="card row" wx:for="{{rows}}" wx:key="id">
+  <text class="rank rank-{{item.rank <= 3 ? item.rank : 'n'}}">{{item.rank}}</text>
+  <text class="name {{item.isMe ? 'me' : ''}}">{{item.name}}{{item.isMe ? '（你）' : ''}}</text>
+  <text class="pw">{{item.power}}</text>
+</view>
+
+<button class="btn-primary block" disabled="{{me.rank <= 1}}" bindtap="challengeNext">
+  {{me.rank <= 1 ? '已是榜首' : '挑战上一名'}}
+</button>

@@ -1,0 +1,9 @@
+{
+  "name": "upgrade",
+  "version": "1.0.0",
+  "description": "升星与战力重算",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

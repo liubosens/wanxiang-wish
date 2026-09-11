@@ -1,18 +1,29 @@
 const save = require("../../utils/save");
+const { totalCards } = require("../../utils/pools");
 
 Page({
   data: {
     wallet: {},
     meta: {},
-    version: "0.1.0-mvp"
+    version: "0.1.0-mvp",
+    power: 0,
+    codexPct: 0,
+    codexOwned: 0,
+    codexTotal: 0
   },
   onShow() {
     const app = getApp();
     const data = save.getSave();
+    const total = totalCards();
+    const owned = Object.keys(data.codex || {}).length;
     this.setData({
       wallet: data.wallet,
       meta: data.meta,
-      version: app.globalData.version
+      version: app.globalData.version,
+      power: data.meta.power || 0,
+      codexOwned: owned,
+      codexTotal: total,
+      codexPct: total ? Math.round((owned / total) * 100) : 0
     });
   },
   claimDaily() {
@@ -36,5 +47,8 @@ Page({
         wx.showToast({ title: "已重置" });
       }
     });
+  },
+  openLeaderboard() {
+    wx.switchTab({ url: "/pages/leaderboard/leaderboard" });
   }
 });

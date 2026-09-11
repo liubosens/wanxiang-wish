@@ -3,15 +3,24 @@
   <view class="muted">版本 {{version}} · 模拟币 MVP</view>
 </view>
 
+<view class="card highlight">
+  <view class="big">{{power}}</view>
+  <view class="muted">战力（编队最优 5 张）</view>
+  <view class="muted">图鉴完成度 {{codexPct}}%（{{codexOwned}}/{{codexTotal}}）</view>
+</view>
+
 <view class="card">
   <view>祈愿石 {{wallet.wish_stone}}</view>
   <view>箱钥 {{wallet.chest_key}}</view>
   <view>机台币 {{wallet.machine_coin}}</view>
   <view>星尘币 {{wallet.dust}}</view>
-  <view class="muted">累计抽取 {{meta.totalDraws || 0}} 次</view>
+  <view>荣耀积分 {{wallet.point_wz}}</view>
+  <view>升星碎片 {{wallet.fragments}} ｜ 进阶石 {{wallet.stone}}</view>
+  <view class="muted">累计抽取 {{meta.totalDraws || 0}} 次 ｜ PK {{meta.pkWin || 0}}胜{{meta.pkLose || 0}}负</view>
 </view>
 
 <button class="btn-primary block" bindtap="claimDaily">领取每日补给</button>
+<button class="btn-ghost block" bindtap="openLeaderboard">查看排行榜</button>
 <button class="btn-ghost block" bindtap="resetSave">重置本地存档</button>
 
 <view class="card muted">

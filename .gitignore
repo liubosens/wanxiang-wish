@@ -11,7 +11,28 @@ Thumbs.db
 .vscode/
 *.log
 
+# Playwright 本地测试产物
+/.playwright-mcp/
+/banner-ten.png
+
+# Capacitor / Android 构建产物
+/android/build/
+/android/app/build/
+/android/.gradle/
+/android/local.properties
+/android/app/src/main/assets/public/
+
 # Env / secrets
 .env
 .env.*
 **/config.local.js
+
+# Cloudflare 本地密钥（含真实 JWT_SECRET，绝不提交）
+.dev.vars
+**/.dev.vars
+
+# WorkBuddy 本地工作数据（记忆 / 会话笔记，不对外公开）
+/.workbuddy/
+
+# Wrangler 本地开发缓存（含本地 D1/KV 状态与构建产物，不入库）
+**/.wrangler/

@@ -1,0 +1,35 @@
+{
+  "poolId": "c2_wangzhe_v1",
+  "name": "王者·荣耀积攒",
+  "presentation": "machine",
+  "cost": { "itemId": "machine_coin", "amount": 1 },
+  "pointsPerDraw": 1,
+  "exchange": { "itemId": "wz_wuze", "name": "武则天", "cost": 30 },
+  "rarities": [
+    { "id": "R", "weight": 730 },
+    { "id": "SR", "weight": 270 }
+  ],
+  "lootTables": {
+    "R": [
+      { "itemId": "wz_hanxin", "name": "韩信", "weight": 1 },
+      { "itemId": "wz_luban", "name": "鲁班七号", "weight": 1 },
+      { "itemId": "wz_yingzheng", "name": "嬴政", "weight": 1 },
+      { "itemId": "wz_luona", "name": "露娜", "weight": 1 },
+      { "itemId": "wz_houyi", "name": "后羿", "weight": 1 },
+      { "itemId": "wz_daji", "name": "妲己", "weight": 1 }
+    ],
+    "SR": [
+      { "itemId": "wz_libai", "name": "李白", "weight": 1 },
+      { "itemId": "wz_diaochan", "name": "貂蝉", "weight": 1 },
+      { "itemId": "wz_hualan", "name": "花木兰", "weight": 1 },
+      { "itemId": "wz_gongsun", "name": "公孙离", "weight": 1 },
+      { "itemId": "wz_dianwei", "name": "典韦", "weight": 1 }
+    ]
+  },
+  "ratePublic": {
+    "notes": [
+      "常规仅出 R/SR。",
+      "每抽积 1 荣耀积分，满 30 兑换指定 UR(武则天)（实现中）。"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "poolId": "b1_copper_v1",
+  "name": "铜宝箱",
+  "sceneType": "B1",
+  "presentation": "chest",
+  "chestTier": "copper",
+  "cost": { "itemId": "chest_key", "amount": 1 },
+  "lootTables": {
+    "copper": [
+      { "itemId": "mat_wood", "name": "星木", "rarity": "R", "weight": 60 },
+      { "itemId": "mat_iron", "name": "陨铁", "rarity": "R", "weight": 30 },
+      { "itemId": "mat_shard_sr", "name": "SR 碎片", "rarity": "SR", "weight": 10 }
+    ]
+  },
+  "ratePublic": {
+    "notes": ["铜箱：常见材料为主，小概率 SR 碎片。"]
+  }
+}

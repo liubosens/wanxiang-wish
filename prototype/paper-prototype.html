@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>万象心愿 · 终版原型 v0.5（含弱联机竞争）</title>
+<style>
+  :root{--bg:#f7f8fa;--panel:#fff;--ink:#1f2329;--sub:#6b7280;--line:#e5e7eb;
+    --r:#9ca3af;--sr:#3b82f6;--ur:#f59e0b;--accent:#6366f1;--good:#10b981;--stone:#8b5cf6;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);padding:16px;max-width:920px;margin:0 auto;}
+  h1{font-size:19px;margin:0 0 4px;}
+  .tip{color:var(--sub);font-size:12px;margin:0 0 12px;line-height:1.5;}
+  .hud{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;min-width:78px;}
+  .chip b{display:block;font-size:18px;} .chip span{font-size:11px;color:var(--sub);}
+  .chip.pw{border-color:var(--accent);} .chip.pw b{color:var(--accent);font-size:22px;}
+  .tabs{display:flex;gap:8px;margin-bottom:12px;}
+  .tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;text-align:center;font-weight:600;color:var(--sub);}
+  .tab.on{background:var(--accent);color:#fff;border-color:var(--accent);} .tab small{display:block;font-weight:400;font-size:10px;opacity:.8;}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  button{font-family:inherit;border:none;border-radius:9px;padding:10px 14px;font-size:14px;cursor:pointer;background:var(--accent);color:#fff;font-weight:600;}
+  button.ghost{background:#eef2ff;color:var(--accent);} button:disabled{opacity:.4;cursor:not-allowed;}
+  .pity{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:12px;font-size:12px;}
+  .pity .bar{height:8px;background:#eef0f3;border-radius:5px;overflow:hidden;margin-top:6px;}
+  .pity .fill{height:100%;transition:width .3s;}
+  .f1{background:linear-gradient(90deg,#a5b4fc,#6366f1);} .f2{background:linear-gradient(90deg,#fcd34d,#f59e0b);} .f3{background:linear-gradient(90deg,#c4b5fd,#8b5cf6);}
+  .reveal{background:var(--panel);border:1px solid var(--line);border-radius:14px;min-height:110px;display:flex;align-items:center;justify-content:center;padding:16px;margin-bottom:12px;}
+  .card{width:100px;height:142px;border-radius:12px;background:#fff;border:3px solid var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.08);animation:pop .3s ease;}
+  .card.sr{border-color:var(--sr);box-shadow:0 8px 28px rgba(59,130,246,.3);} .card.ur{border-color:var(--ur);box-shadow:0 8px 32px rgba(245,158,11,.4);}
+  .card .rar{font-size:11px;font-weight:700;letter-spacing:2px;} .card .nm{font-size:13px;font-weight:700;margin-top:8px;text-align:center;padding:0 4px;}
+  .card .tag{margin-top:8px;font-size:11px;color:var(--good);font-weight:700;} .card .tag.dup{color:var(--sr);}
+  @keyframes pop{from{transform:scale(.6) rotate(-6deg);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .regions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+  .region{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;}
+  .region h3{margin:0 0 3px;font-size:13px;} .region .pct{font-size:11px;color:var(--sub);margin-bottom:6px;}
+  .region.hot{box-shadow:0 0 0 3px var(--good) inset;} .region .hot-tag{color:var(--good);font-weight:700;}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+  .slot{aspect-ratio:3/4;border-radius:5px;background:#eef0f3;display:flex;align-items:center;justify-content:center;font-size:9px;color:#9aa0a6;overflow:hidden;flex-direction:column;cursor:default;}
+  .slot.on{background:#fff;border:1px solid var(--line);color:var(--ink);cursor:pointer;font-weight:600;} .slot.on:hover{box-shadow:0 0 0 2px var(--accent);}
+  .slot.sr.on{border-color:var(--sr);color:var(--sr);} .slot.ur.on{border-color:var(--ur);color:var(--ur);}
+  .slot.lock{background:#1f23290d;color:#c4c8ce;} .slot .st{font-size:9px;color:var(--stone);margin-top:2px;}
+  .detail{background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;min-height:50px;}
+  .lb{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px;}
+  .lb h3{margin:0 0 8px;font-size:14px;} .lb .row{display:flex;justify-content:space-between;padding:5px 8px;border-radius:7px;font-size:13px;}
+  .lb .row.me{background:#eef2ff;font-weight:700;color:var(--accent);} .lb .rk{color:var(--sub);width:28px;}
+  .lb .row b{font-weight:700;} .lb .pow{color:var(--stone);}
+  .log{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:11px;color:var(--sub);max-height:130px;overflow:auto;}
+  .log div{margin:2px 0;}
+  .check{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:9px;font-size:11px;color:#92400e;margin-bottom:12px;line-height:1.6;}
+</style>
+</head>
+<body>
+  <h1>万象心愿 · 终版原型 v0.5（弱联机竞争）</h1>
+  <p class="tip">抽卡(三机制)→图鉴→升星→<b>战力</b>→排行榜/PK。升星直接爬榜，排名不会满 = 长线钩子。</p>
+
+  <div class="hud">
+    <div class="chip pw"><b id="power">0</b><span>账号战力</span></div>
+    <div class="chip"><b id="rank">-</b><span>排名</span></div>
+    <div class="chip"><b id="coin">30</b><span>星砂</span></div>
+    <div class="chip"><b id="stone">0</b><span>进阶石</span></div>
+    <div class="chip"><b id="total">0</b><span>图鉴%</span></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" id="tg" onclick="setWorld('genshin')">原神区<small>赌个人规律</small></div>
+    <div class="tab" id="ts" onclick="setWorld('sg')">三国杀区<small>赌社区运气</small></div>
+    <div class="tab" id="tw" onclick="setWorld('wz')">王者区<small>不赌·攒积分</small></div>
+  </div>
+
+  <div class="pity" id="pityBox"></div>
+
+  <div class="actions">
+    <button id="btnPull">在原神区抽卡（1）</button>
+    <button id="btn10" class="ghost">十连（10）</button>
+    <button id="btnDaily" class="ghost">领取每日 +12</button>
+    <button id="btnDay" class="ghost">过一天</button>
+    <button id="btnEx" class="ghost" style="display:none;">兑换 UR（耗30积分）</button>
+  </div>
+
+  <div class="reveal" id="reveal"><div style="color:var(--sub);font-size:12px;">选世界后点抽卡 →</div></div>
+
+  <div class="lb">
+    <h3>弱联机排行榜（战力排名 · 挑战上一名 PK）</h3>
+    <div id="lbList"></div>
+    <button id="btnPK" class="ghost" style="margin-top:8px;">挑战上一名</button>
+    <div id="pkR" style="font-size:12px;color:var(--sub);margin-top:6px;"></div>
+  </div>
+
+  <div class="regions" id="regions"></div>
+  <div class="detail" id="detail">点击已拥有的卡牌可查看 / 升星。</div>
+
+  <div class="check"><b>v0.5 验证清单</b><br>A：玩家是否因排名/PK <b>每天回来</b>？升星是否明显带动爬榜行为？<br>B：PK 参与率 <30% → 竞争层无感，回炉。<br>C：榜顶长期被同一人霸占且无人追 → 需赛季/段位匹配。</div>
+
+  <div class="log" id="log"></div>
+
+<script>
+const POOLS={
+  genshin:[["荧",1],["空",1],["温迪",1],["魈",1],["枫原万叶",1],["提瓦特",1],["钟离",2],["胡桃",2],["甘雨",2],["神里绫华",2],["纳西妲",2],["雷电将军",3,1]],
+  sg:[["刘备",1],["孙权",1],["司马懿",1],["赵云",1],["张飞",1],["黄月英",1],["曹操",2],["诸葛亮",2],["周瑜",2],["关羽",2],["吕布",3],["左慈",3]],
+  wz:[["韩信",1],["鲁班七号",1],["嬴政",1],["露娜",1],["后羿",1],["妲己",1],["李白",2],["貂蝉",2],["花木兰",2],["公孙离",2],["典韦",2],["武则天",3]]
+};
+const WNAME={genshin:"原神区",sg:"三国杀区",wz:"王者区"};
+const RNAME={1:"R",2:"SR",3:"UR"};
+const SHARD={1:5,2:30,3:80};
+const RPOW={1:10,2:30,3:80};
+const RMULT={1:1,2:2,3:3};
+const SG_T=80;
+const BOTS=[{n:"欧皇本皇",p:620},{n:"非酋之王",p:480},{n:"保底战神",p:360},{n:"十连空",p:260},{n:"微氪党",p:190},{n:"月卡侠",p:140},{n:"萌新A",p:95},{n:"路人甲",p:60}];
+
+let S={coin:30,stone:0,world:'genshin',gPity:0,gUp:false,server:0,wgPoints:0,
+  got:new Set(),stars:{},day:1,daily:false,log:[],sel:null,win:0,lose:0};
+const CARDS=[];for(const k in POOLS)POOLS[k].forEach((c,i)=>CARDS.push({region:k,idx:i,name:c[0],rar:c[1],up:c[2]===1,id:k+"-"+i}));
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const poolOf=(w,r)=>CARDS.filter(c=>c.region===w&&c.rar===r);
+
+function accountPower(){
+  const owned=CARDS.filter(c=>S.got.has(c.id)).map(c=>({p:RPOW[c.rar]*(1+0.25*(S.stars[c.id]||0))}));
+  owned.sort((a,b)=>b.p-a.p);
+  return Math.round(owned.slice(0,5).reduce((s,o)=>s+o.p,0));
+}
+function drawGenshin(){S.gPity++;let rar;
+  if(S.gPity>=90)rar=3;else{let urC=S.gPity>=74?(0.03+(S.gPity-74)*0.06):0.03;let x=Math.random();rar=x<urC?3:(x<urC+0.27?2:1);}
+  let card=rnd(poolOf('genshin',rar));
+  if(rar===3){S.gPity=0;if(S.gUp){card=CARDS.find(c=>c.region==='genshin'&&c.rar===3&&c.up);S.gUp=false;}
+    else{if(Math.random()<0.5&&card.up){}else{card=CARDS.find(c=>c.region==='genshin'&&c.rar===3&&!c.up);S.gUp=true;}}}
+  return card;}
+function drawSG(){S.server+=1+Math.floor(Math.random()*3);let rar=1;
+  if(S.server>=SG_T){rar=3;S.server=0;}else{let x=Math.random();rar=x<0.03?3:(x<0.30?2:1);}
+  return rnd(poolOf('sg',rar));}
+function drawWZ(){S.wgPoints++;let x=Math.random();let rar=x<0.27?2:1;return rnd(poolOf('wz',rar));}
+function draw(){let card=S.world==='genshin'?drawGenshin():S.world==='sg'?drawSG():drawWZ();
+  const isNew=!S.got.has(card.id);if(isNew)S.got.add(card.id);else S.shard=SHARD[card.rar];return{p:card,isNew};}
+function pull(n){if(S.coin<n){flash("星砂不足");return;}S.coin-=n;let last;
+  for(let i=0;i<n;i++){last=draw();S.log.unshift(`[${WNAME[S.world]}] ${last.p.name}(${RNAME[last.p.rar]})· `+(last.isNew?"NEW!":"重复+"+SHARD[last.p.rar]));}
+  renderReveal(last);renderAll();}
+function exchange(){if(S.world!=='wz'){flash("积分兑换仅王者区");return;}if(S.wgPoints<30){flash("积分不足30");return;}
+  S.wgPoints-=30;const ur=CARDS.find(c=>c.region==='wz'&&c.rar===3);
+  if(!S.got.has(ur.id)){S.got.add(ur.id);S.log.unshift(`积分兑换 ${ur.name}(UR)!`);}else{S.shard+=80;S.log.unshift(`兑换重复转80碎片`);}renderAll();}
+function starCost(id){const c=CARDS.find(x=>x.id===id);const s=S.stars[id]||0;if(s>=5)return null;
+  return{fra:10*(s+1)*RMULT[c.rar],sto:(s+1)>=3?(s+1-2)*RMULT[c.rar]:0,s};}
+function upStar(){if(!S.sel)return;const c=starCost(S.sel);if(!c)return;if(S.shard<c.fra||S.stone<c.sto){flash("资源不足");return;}
+  S.shard-=c.fra;S.stone-=c.sto;S.stars[S.sel]=(S.stars[S.sel]||0)+1;S.log.unshift(`升星 ${CARDS.find(x=>x.id===S.sel).name} → ${S.stars[S.sel]}★`);renderAll();}
+function setWorld(w){S.world=w;document.getElementById('tg').className='tab'+(w==='genshin'?' on':'');
+  document.getElementById('ts').className='tab'+(w==='sg'?' on':'');document.getElementById('tw').className='tab'+(w==='wz'?' on':'');
+  document.getElementById('btnPull').textContent='在'+WNAME[w]+'抽卡（1）';
+  document.getElementById('btnEx').style.display=w==='wz'?'inline-block':'none';renderPity();}
+function renderPity(){const b=document.getElementById('pityBox');
+  if(S.world==='genshin')b.innerHTML=`个人阶梯保底 <b>${S.gPity}/90</b> ${S.gUp?'· 大保底(下次必UP)':'· 小保底(50%UP)'} <div class="bar"><div class="fill f1" style="width:${S.gPity/90*100}%"></div></div>`;
+  else if(S.world==='sg')b.innerHTML=`全服累积保底 <b>${S.server}/${SG_T}</b>（含他人抽取，满阈值下次必出UR）<div class="bar"><div class="fill f2" style="width:${S.server/SG_T*100}%"></div></div>`;
+  else b.innerHTML=`荣耀积分 <b>${S.wgPoints}</b>/30 可兑换指定UR（零赌博）<div class="bar"><div class="fill f3" style="width:${Math.min(S.wgPoints/30*100,100)}%"></div></div>`;}
+function renderReveal(r){const cls=r.p.rar===3?"ur":r.p.rar===2?"sr":"";const tag=r.isNew?'<div class="tag">NEW!</div>':'<div class="tag dup">重复 +'+SHARD[r.p.rar]+'碎片</div>';
+  document.getElementById("reveal").innerHTML=`<div class="card ${cls}"><div class="rar">${RNAME[r.p.rar]}</div><div class="nm">${r.p.name}</div>${tag}</div>`;}
+function renderLeaderboard(){const me=accountPower();
+  const list=BOTS.map(b=>({n:b.n,p:b.p,you:false}));list.push({n:'你',p:me,you:true});
+  list.sort((a,b)=>b.p-a.p);const myIdx=list.findIndex(x=>x.you);
+  document.getElementById('power').textContent=me;
+  document.getElementById('rank').textContent='#'+(myIdx+1);
+  document.getElementById('lbList').innerHTML=list.map((x,i)=>
+    `<div class="row ${x.you?'me':''}"><span class="rk">#${i+1}</span><b>${x.n}</b><span class="pow">战力 ${x.p}</span></div>`).join('');
+  const pk=document.getElementById('btnPK');
+  if(myIdx===0){pk.disabled=true;pk.textContent='已登顶（赛季结算后重置）';}
+  else{pk.disabled=false;pk.textContent=`挑战上一名（${list[myIdx-1].n}）`;}
+  return {list,myIdx};}
+function fightPK(){const {list,myIdx}=renderLeaderboard();if(myIdx===0)return;const opp=list[myIdx-1];
+  const myV=accountPower()*(0.85+Math.random()*0.3);const opV=opp.p*(0.85+Math.random()*0.3);
+  if(myV>=opV){S.win++;S.coin+=5;S.stone+=1;document.getElementById('pkR').innerHTML=`✅ PK胜 ${Math.round(myV)} vs ${Math.round(opV)}！+5星砂+1石头（但要真超榜需升星抬战力）`;S.log.unshift(`PK胜 ${opp.n}`);}
+  else{S.lose++;document.getElementById('pkR').innerHTML=`❌ PK负 ${Math.round(myV)} vs ${Math.round(opV)}。升星才能真爬榜。`;S.log.unshift(`PK负 ${opp.n}`);}
+  renderAll();}
+function renderHUD(){document.getElementById("coin").textContent=S.coin;document.getElementById("stone").textContent=S.stone;
+  document.getElementById("total").textContent=Math.round(S.got.size/CARDS.length*100);document.getElementById("btnDaily").disabled=S.daily;}
+function renderRegions(){const box=document.getElementById("regions");box.innerHTML="";
+  for(const k in POOLS){const total=POOLS[k].length;let have=0,rsHave=0,rsTot=0;
+    POOLS[k].forEach((c,i)=>{const id=k+"-"+i;if(S.got.has(id))have++;if(c[1]<3){rsTot++;if(S.got.has(id))rsHave++;}});
+    const pct=Math.round(have/total*100);const hot=rsHave>0&&rsHave<rsTot&&rsHave/rsTot>=0.75;const miss=rsTot-rsHave;
+    let slots="";POOLS[k].forEach((c,i)=>{const id=k+"-"+i;const on=S.got.has(id);const lock=!on&&c[1]===3;
+      const cl=lock?"lock":on?(c[1]===3?"ur":c[1]===2?"sr":"")+" on":"";
+      const st=on&&S.stars[id]?("★".repeat(S.stars[id])):"";
+      slots+=`<div class="slot ${cl}" ${on?`onclick="sel('${id}')"`:""}>${lock?"🔒":on?c[0]:"·"}<div class="st">${st}</div></div>`;});
+    box.innerHTML+=`<div class="region ${hot?'hot':''}"><h3>${WNAME[k]}</h3><div class="pct">${have}/${total}(${pct}%)`+`${hot?` <span class="hot-tag">R/SR快集齐!差${miss}</span>`:""}</div><div class="grid">${slots}</div></div>`;}}
+function renderDetail(){const d=document.getElementById("detail");if(!S.sel){d.textContent="点击已拥有的卡牌可查看 / 升星。";return;}
+  const c=CARDS.find(x=>x.id===S.sel);const st=S.stars[S.sel]||0;const cost=starCost(S.sel);
+  if(!cost){d.innerHTML=`<b>${c.name}</b> (${RNAME[c.rar]}) 已满星 5★。`;return;}
+  d.innerHTML=`<b>${c.name}</b> (${RNAME[c.rar]}) 当前 ${st}★ → 下一级需 ${cost.fra}碎片${cost.sto?" +"+cost.sto+"进阶石":""} <button class="ghost" onclick="upStar()">升星</button>`;}
+function renderLog(){document.getElementById("log").innerHTML=S.log.slice(0,40).map(l=>`<div>${l}</div>`).join("");}
+function renderAll(){renderHUD();renderRegions();renderDetail();renderPity();renderLeaderboard();renderLog();}
+function flash(m){document.getElementById("reveal").innerHTML=`<div style="color:#b45309;font-size:12px;">${m}</div>`;}
+function sel(id){S.sel=id;renderDetail();}
+
+document.getElementById("btnPull").onclick=()=>pull(1);
+document.getElementById("btn10").onclick=()=>pull(10);
+document.getElementById("btnEx").onclick=exchange;
+document.getElementById("btnPK").onclick=fightPK;
+document.getElementById("btnDaily").onclick=()=>{if(S.daily)return;S.coin+=12;S.daily=true;renderAll();flash("已领每日+12");};
+document.getElementById("btnDay").onclick=()=>{S.day++;S.daily=false;S.coin+=3;renderAll();flash("第"+S.day+"天：离线+3");};
+
+setWorld('genshin');renderAll();
+</script>
+</body>
+</html>

@@ -7,7 +7,9 @@
     "pages/inventory/inventory",
     "pages/history/history",
     "pages/rates/rates",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/leaderboard/leaderboard",
+    "pages/pk/pk"
   ],
   "window": {
     "navigationBarTitleText": "万象祈愿",
@@ -37,6 +39,10 @@
       {
         "pagePath": "pages/profile/profile",
         "text": "我的"
+      },
+      {
+        "pagePath": "pages/leaderboard/leaderboard",
+        "text": "排行"
       }
     ]
   },

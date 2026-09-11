@@ -1,3 +1,5 @@
 .title{font-size:40rpx;font-weight:700;margin-bottom:8rpx}
 .block{margin:24rpx 48rpx}
 .card view{margin:8rpx 0}
+.highlight{text-align:center;background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(129,140,248,.18));border-color:rgba(125,211,252,.4)}
+.highlight .big{font-size:72rpx;font-weight:800;color:#7dd3fc;line-height:1.1}

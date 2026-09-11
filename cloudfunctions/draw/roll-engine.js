@@ -125,10 +125,20 @@ function createRng(seed) {
  */
 function roll(pool, pityState, times, options) {
   const rand = options && options.rand ? options.rand : createRng(options && options.seed);
+  const forceRarity = (options && options.forceRarity) || null;
+  let forceUsed = false;
   let pity = ensurePity(pityState, pool);
   const results = [];
 
   for (let i = 0; i < times; i++) {
+    if (forceRarity && !forceUsed) {
+      forceUsed = true;
+      const fr = forceRarity;
+      const fitem = pickItemFromRarity(pool, fr, pity, rand);
+      pity = applyPityAfterDraw(pool, pity, fr, fitem);
+      results.push({ ...fitem, index: i });
+      continue;
+    }
     let rarityId;
 
     if (pool.sceneType === "C2" && pool.sectors) {

@@ -1,0 +1,46 @@
+{
+  "poolId": "a1_genshin_v1",
+  "name": "原神·星轨祈愿",
+  "presentation": "banner",
+  "cost": { "itemId": "wish_stone", "amount": 1 },
+  "multi": { "tenGuaranteeRarity": "SR" },
+  "rarities": [
+    { "id": "R", "weight": 940 },
+    { "id": "SR", "weight": 51, "softPityStart": 74, "softPityStep": 60, "hardPity": 90 },
+    { "id": "UR", "weight": 9, "softPityStart": 74, "softPityStep": 600, "hardPity": 90 }
+  ],
+  "up": {
+    "enabled": true,
+    "rarity": "UR",
+    "loseStreakKey": "up_lose",
+    "maxLoseThenGuaranteed": 1,
+    "ssrUpRate": 0.5,
+    "itemIds": ["genshin_raiden"]
+  },
+  "lootTables": {
+    "R": [
+      { "itemId": "genshin_ying", "name": "荧", "weight": 1 },
+      { "itemId": "genshin_kong", "name": "空", "weight": 1 },
+      { "itemId": "genshin_wendy", "name": "温迪", "weight": 1 },
+      { "itemId": "genshin_xiao", "name": "魈", "weight": 1 },
+      { "itemId": "genshin_mao", "name": "枫原万叶", "weight": 1 },
+      { "itemId": "genshin_ti", "name": "提瓦特", "weight": 1 }
+    ],
+    "SR": [
+      { "itemId": "genshin_hutao", "name": "胡桃", "weight": 1 },
+      { "itemId": "genshin_ganyu", "name": "甘雨", "weight": 1 },
+      { "itemId": "genshin_ayaka", "name": "神里绫华", "weight": 1 },
+      { "itemId": "genshin_nahida", "name": "纳西妲", "weight": 1 }
+    ],
+    "UR": [
+      { "itemId": "genshin_raiden", "name": "雷电将军", "weight": 50 },
+      { "itemId": "genshin_zhongli", "name": "钟离", "weight": 50 }
+    ]
+  },
+  "ratePublic": {
+    "notes": [
+      "五星(UR)基础概率约 0.9%，74 抽起软保底递增，90 抽硬保底。",
+      "小保底 50% 出 UP，歪则大保底 100% 出 UP。"
+    ]
+  }
+}

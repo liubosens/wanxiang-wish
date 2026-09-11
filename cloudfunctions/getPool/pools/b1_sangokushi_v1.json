@@ -1,0 +1,39 @@
+{
+  "poolId": "b1_sangokushi_v1",
+  "name": "三国杀·全服博弈",
+  "presentation": "chest",
+  "cost": { "itemId": "chest_key", "amount": 1 },
+  "multi": { "tenGuaranteeRarity": "SR" },
+  "rarities": [
+    { "id": "R", "weight": 940 },
+    { "id": "SR", "weight": 60, "softPityStart": 74, "softPityStep": 60, "hardPity": 90 },
+    { "id": "UR", "weight": 0 }
+  ],
+  "serverPity": { "enabled": true, "threshold": 80, "rewardRarity": "UR" },
+  "lootTables": {
+    "R": [
+      { "itemId": "sg_liubei", "name": "刘备", "weight": 1 },
+      { "itemId": "sg_sunquan", "name": "孙权", "weight": 1 },
+      { "itemId": "sg_simayi", "name": "司马懿", "weight": 1 },
+      { "itemId": "sg_zhaoyun", "name": "赵云", "weight": 1 },
+      { "itemId": "sg_zhangfei", "name": "张飞", "weight": 1 },
+      { "itemId": "sg_huang", "name": "黄月英", "weight": 1 }
+    ],
+    "SR": [
+      { "itemId": "sg_caocao", "name": "曹操", "weight": 1 },
+      { "itemId": "sg_zhugeliang", "name": "诸葛亮", "weight": 1 },
+      { "itemId": "sg_zhouyu", "name": "周瑜", "weight": 1 },
+      { "itemId": "sg_guanyu", "name": "关羽", "weight": 1 }
+    ],
+    "UR": [
+      { "itemId": "sg_lvbu", "name": "吕布", "weight": 50 },
+      { "itemId": "sg_zuoci", "name": "左慈", "weight": 50 }
+    ]
+  },
+  "ratePublic": {
+    "notes": [
+      "常规仅出 R/SR。",
+      "UR 由全服累积保底触发：全服抽数达阈值后下一次必出 UR 并清零（实现中）。"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+<view class="card">
+  <view class="title">对战 · {{oppName}}</view>
+  <view class="muted">对手战力 {{oppPower}} ｜ 你的战力 {{myPower}}</view>
+  <view class="muted">规则：双方战力 ×(0.85~1.15) 方差结算，真爬榜靠升星抬战力。</view>
+</view>
+
+<view class="card vs" wx:if="{{!result}}">
+  <button class="btn-primary block" loading="{{fighting}}" bindtap="doBattle">发起对战</button>
+</view>
+
+<view class="card" wx:if="{{result}}">
+  <view class="outcome {{result.win ? 'win' : 'lose'}}">{{result.win ? '胜 利' : '失 败'}}</view>
+  <view class="muted">你 {{result.myVal}} ｜ {{result.oppName}} {{result.oppVal}}</view>
+  <view class="reward" wx:if="{{result.win}}">奖励：祈愿石 +5 ｜ 进阶石 +1</view>
+  <view class="reward" wx:else>再接再厉，升星提升战力可稳赢。</view>
+  <button class="btn-ghost block" bindtap="doBattle">再战</button>
+</view>
+
+<button class="btn-ghost block" bindtap="back">返回排行榜</button>

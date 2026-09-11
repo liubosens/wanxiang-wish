@@ -1,6 +1,7 @@
 const save = require("../utils/save");
 const { getPool } = require("../utils/pools");
 const { roll } = require("../lib/roll-engine");
+const power = require("../utils/power");
 
 function currencyLabel(id) {
   const map = {
@@ -28,10 +29,18 @@ async function drawLocal({ poolId, times }) {
 
   const pityKey = poolId;
   const pityState = data.pity[pityKey] || {};
-  const rolled = roll(pool, pityState, times, {});
+  let forceRarity = null;
+  let spCount = (data.serverPity && data.serverPity[poolId]) || 0;
+  if (pool.serverPity && pool.serverPity.enabled) {
+    spCount = spCount + 1 + Math.floor(Math.random() * 3);
+    if (spCount >= pool.serverPity.threshold) { forceRarity = pool.serverPity.rewardRarity; spCount = 0; }
+  }
+  const rolled = roll(pool, pityState, times, forceRarity ? { forceRarity } : {});
 
   save.update((s) => {
     s.wallet[costItem] -= need;
+    if (poolId === "c2_wangzhe_v1") s.wallet.point_wz = (s.wallet.point_wz || 0) + times;
+    if (pool.serverPity && pool.serverPity.enabled) { s.serverPity = s.serverPity || {}; s.serverPity[poolId] = spCount; }
     s.pity[pityKey] = rolled.pityState;
     s.meta.totalDraws += times;
     rolled.results.forEach((item) => {
@@ -40,13 +49,20 @@ async function drawLocal({ poolId, times }) {
         const add = item.itemId === "dust" ? 50 : item.itemId === "machine_coin" ? 2 : 1;
         s.wallet[item.itemId] = (s.wallet[item.itemId] || 0) + add;
       } else {
-        const inv = s.inventory[item.itemId] || { count: 0, name: item.name, rarity: item.rarity };
+        const inv = s.inventory[item.itemId] || { count: 0, name: item.name, rarity: item.rarity, star: 0 };
         const first = inv.count === 0;
         inv.count += 1;
+        inv.star = inv.star || 0;
         inv.name = item.name;
         inv.rarity = item.rarity;
         s.inventory[item.itemId] = inv;
-        if (first) s.codex[item.itemId] = { name: item.name, rarity: item.rarity, at: Date.now() };
+        if (first) {
+          s.codex[item.itemId] = { name: item.name, rarity: item.rarity, at: Date.now() };
+        } else {
+          // 重复卡转化为升星碎片（卡牌必须有用）
+          const gain = power.dupFragmentGain(inv.rarity);
+          s.wallet.fragments = (s.wallet.fragments || 0) + gain;
+        }
       }
       s.history.unshift({
         id: `${Date.now()}_${item.index}_${Math.random().toString(16).slice(2, 6)}`,
@@ -59,6 +75,7 @@ async function drawLocal({ poolId, times }) {
       });
     });
     s.history = s.history.slice(0, 200);
+    s.meta.power = power.computePower(s.inventory); // 抽卡后重算战力
   });
 
   return {

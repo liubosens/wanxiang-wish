@@ -10,3 +10,6 @@
 .wheel.spin{animation:spin 0.9s ease-out}
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(720deg)}}
 .actions{display:flex;gap:16rpx;justify-content:center;margin-top:24rpx;flex-wrap:wrap}
+.progress{height:16rpx;border-radius:999rpx;background:rgba(125,211,252,.15);overflow:hidden;margin:16rpx 0}
+.progress .bar{height:100%;background:linear-gradient(90deg,#38bdf8,#fbbf24);transition:width .3s}
+button[disabled]{opacity:.5}

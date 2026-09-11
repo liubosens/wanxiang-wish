@@ -1,0 +1,19 @@
+name = "wanxiang-wish"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+account_id = "d1b7a3b3075f7e9ffe20629f07594286"
+
+# JWT_SECRET is a secret. For local dev set it in .dev.vars (see .dev.vars.example).
+# For production run: wrangler secret put JWT_SECRET
+# Do NOT commit the real secret.
+
+[[d1_databases]]
+binding = "DB"
+database_name = "wanxiang-wish"
+# Replace with the id from: wrangler d1 create wanxiang-wish
+database_id = "3b19c124-d140-42c3-96c5-76a925dd2d65"
+
+[[kv_namespaces]]
+binding = "KV"
+# Replace with the id from: wrangler kv namespace create wanxiang-wish-leaderboard
+id = "45c9eb877f3b4f3fa3e62043b5046f36"

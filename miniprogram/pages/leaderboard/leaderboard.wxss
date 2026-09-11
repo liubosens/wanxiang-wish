@@ -1,0 +1,10 @@
+.title{font-size:36rpx;font-weight:700;margin-bottom:8rpx}
+.row{display:flex;align-items:center;gap:16rpx}
+.rank{width:56rpx;text-align:center;font-weight:700;color:#8b93a7}
+.rank-1{color:#fbbf24}
+.rank-2{color:#cbd5e1}
+.rank-3{color:#d97706}
+.name{flex:1}
+.name.me{color:#7dd3fc;font-weight:700}
+.pw{color:#94a3b8;font-variant-numeric:tabular-nums}
+.block{margin:24rpx 48rpx}

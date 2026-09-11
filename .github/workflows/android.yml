@@ -1,0 +1,66 @@
+name: Build Android APK
+
+# 云端构建 APK，本机无需安装 JDK / Android SDK。
+# 产出物在 Actions 页面的 Artifacts 里下载：wanxiang-wish-debug-apk
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'web/**'
+      - 'capacitor.config.json'
+      - 'package.json'
+      - '.github/workflows/android.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Capacitor 6 的 Android 工程基于 AGP 8.2，JDK 17 是最稳的组合。
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install npm deps
+        run: npm install --no-audit --no-fund
+
+      # 卡池数据由 miniprogram/configs/pools/*.json 生成，必须先跑。
+      - name: Generate pool data
+        run: npm run build:pools
+
+      - name: Add Android platform if missing
+        run: |
+          if [ ! -d android ]; then
+            npx cap add android
+          fi
+
+      - name: Sync web assets into native project
+        run: npx cap sync android
+
+      - name: Build debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: wanxiang-wish-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 30

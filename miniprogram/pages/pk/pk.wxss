@@ -1,0 +1,7 @@
+.title{font-size:36rpx;font-weight:700;margin-bottom:8rpx}
+.vs{text-align:center}
+.block{margin:24rpx 48rpx}
+.outcome{font-size:56rpx;font-weight:800;text-align:center;margin:16rpx 0}
+.outcome.win{color:#34d399}
+.outcome.lose{color:#fb7185}
+.reward{text-align:center;color:#7dd3fc;margin:12rpx 0}

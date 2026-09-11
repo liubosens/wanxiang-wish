@@ -1,7 +1,7 @@
 <view class="card stage">
   <view class="title">星轨转盘</view>
   <view class="wheel {{spinning ? 'spin' : ''}}">✦</view>
-  <view class="muted">机台币：{{wallet.machine_coin}}</view>
+  <view class="muted">机台币：{{wallet.machine_coin}} ｜ 荣耀积分：{{wallet.point_wz}}</view>
   <view class="actions">
     <button class="btn-primary" loading="{{spinning}}" bindtap="spin">转动一次</button>
     <button class="btn-ghost" bindtap="openRates">公示</button>
@@ -11,4 +11,13 @@
 <view class="card" wx:if="{{result}}">
   <view class="title">停在</view>
   <view class="rarity-{{result.rarity}}">{{result.name}}</view>
+</view>
+
+<view class="card" wx:if="{{exchange.cost}}">
+  <view class="title">荣耀兑换</view>
+  <view class="muted">满 {{exchange.cost}} 积分可兑换 UR「{{exchange.name}}」{{exchange.owned ? "（已拥有）" : ""}}</view>
+  <view class="progress"><view class="bar" style="width:{{ (wallet.point_wz / exchange.cost * 100) > 100 ? 100 : (wallet.point_wz / exchange.cost * 100) }}%"></view></view>
+  <button class="btn-primary" disabled="{{!exchange.canExchange}}" bindtap="doExchange">
+    {{exchange.canExchange ? '兑换 ' + exchange.name : '积分不足'}}
+  </button>
 </view>
