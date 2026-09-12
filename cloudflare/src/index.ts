@@ -14,6 +14,10 @@ import { pkHandler } from './handlers/pk';
 import { profileHandler } from './handlers/profile';
 import { dailyHandler } from './handlers/daily';
 import { accountHandler } from './handlers/account';
+import { bondsHandler } from './handlers/bonds';
+import { listQuestsHandler, claimQuestHandler } from './handlers/quests';
+import { getTowerHandler, challengeTowerHandler, sweepTowerHandler } from './handlers/tower';
+import { listEventsHandler } from './handlers/events';
 
 // 万象祈愿 服务端权威后端入口。
 // 抽卡概率 / 保底 / 战力全部在服务端计算，客户端不可信。
@@ -35,6 +39,13 @@ app.get('/api/leaderboard', authMiddleware, leaderboardHandler);
 app.post('/api/exchange', authMiddleware, exchangeHandler);
 app.post('/api/upgrade', authMiddleware, upgradeHandler);
 app.post('/api/pk', authMiddleware, pkHandler);
+app.get('/api/bonds', authMiddleware, bondsHandler);
+app.get('/api/quests', authMiddleware, listQuestsHandler);
+app.post('/api/quests/claim', authMiddleware, claimQuestHandler);
+app.get('/api/tower', authMiddleware, getTowerHandler);
+app.post('/api/tower/challenge', authMiddleware, challengeTowerHandler);
+app.post('/api/tower/sweep', authMiddleware, sweepTowerHandler);
+app.get('/api/events', authMiddleware, listEventsHandler);
 
 // 账号系统：改昵称/头像、每日签到、注销。
 app.post('/api/profile', authMiddleware, profileHandler);

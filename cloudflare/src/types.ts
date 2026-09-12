@@ -43,6 +43,9 @@ export interface User {
   total_draws: number;
   pk_win: number;
   pk_lose: number;
+  // PK 每日奖励上限（0003 迁移）：当日已发奖胜场，跨日由 pk_reward_date 比对自动清零。
+  pk_reward_date: string | null;
+  pk_reward_wins: number;
   last_daily_at: string | null;
   created_at: number;
   updated_at: number;

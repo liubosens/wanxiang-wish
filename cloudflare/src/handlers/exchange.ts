@@ -3,6 +3,7 @@ import type { AppEnv } from '../types';
 import { getPool } from '../pools';
 import { getUser, saveUser } from '../db';
 import { computePower } from '../power';
+import { bumpQuestProgress } from '../services/quests';
 
 // POST /api/exchange - C2 荣耀积分兑换指定 UR（服务端权威）。
 // 积分与背包均以库中数据为准，客户端只提交 poolId。
@@ -45,6 +46,9 @@ export async function exchangeHandler(c: Context<AppEnv>) {
   user.power = computePower(user.inventory);
   user.updated_at = now;
   await saveUser(c.env.DB, user);
+
+  // 任务埋点：兑换计数（预留给后续任务/活动使用）
+  await bumpQuestProgress(c.env.DB, openid, 'exchange', 1);
 
   return c.json({
     item: { itemId: ex.itemId, name: ex.name, rarity },

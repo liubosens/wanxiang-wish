@@ -1,4 +1,4 @@
-import type { D1Database } from '@cloudflare/workers-types';
+import type { D1Database, KVNamespace } from '@cloudflare/workers-types';
 import type { User, Pity } from '../types';
 import { getPool } from '../pools';
 import { roll, createRng } from '../roll-engine';
@@ -12,6 +12,8 @@ import {
   drawTokenExists,
   insertDrawToken,
 } from '../db';
+import { bumpQuestProgress } from './quests';
+import { fragMultiplier, getActiveEvent } from './events';
 
 // 掉落中的货币扇区：不入背包，直接加钱包余额。数值与客户端 drawLocal 对齐。
 const CURRENCY_GAIN: Record<string, number> = {
@@ -36,15 +38,31 @@ export interface DrawResultPayload {
 }
 
 // 抽卡事务编排（服务端权威）。handlers/draw.ts 只做参数解析与错误翻译。
+// kv 可选：传入则活动判定走 60s 缓存，缺省直查 D1。
 export async function performDraw(
   db: D1Database,
   openid: string,
   poolId: string,
   times: number,
   clientToken?: string,
+  kv?: KVNamespace,
 ): Promise<DrawResultPayload> {
-  const pool = getPool(poolId);
+  let pool = getPool(poolId);
   if (!pool) throw new DrawError(404, 'Pool not found');
+
+  // 活动：UP 轮换（仅替换 up.itemIds 与展示；pity 按 poolId 存，跨轮换继承不重置——2026-09 拍板）
+  const upRotation = await getActiveEvent(db, 'up_rotation', kv);
+  if (
+    upRotation &&
+    upRotation.payload?.poolId === poolId &&
+    pool.up &&
+    Array.isArray(upRotation.payload?.upItemIds) &&
+    (upRotation.payload.upItemIds as unknown[]).length > 0
+  ) {
+    pool = { ...pool, up: { ...pool.up, itemIds: upRotation.payload.upItemIds as string[] } };
+  }
+  // 活动：双倍碎片周（倍率 clamp [1,3]，非法按 1）
+  const fragMult = fragMultiplier(await getActiveEvent(db, 'double_frag', kv));
 
   // 幂等：同一 clientToken 拒绝重复提交（AC-04）。
   if (clientToken) {
@@ -108,7 +126,8 @@ export async function performDraw(
     if (isFirst) {
       user.codex[r.itemId] = { firstAt: now, rarity: r.rarity, name: r.name };
     } else {
-      user.wallet.fragments = (user.wallet.fragments ?? 0) + dupFragmentGain(r.rarity);
+      // 双倍碎片周：活动系数只乘碎片单一资源（events-spec §5.2）
+      user.wallet.fragments = (user.wallet.fragments ?? 0) + dupFragmentGain(r.rarity) * fragMult;
     }
     const inv = prev ?? { count: 0, rarity: r.rarity, star: 0, name: r.name };
     inv.count += 1;
@@ -148,6 +167,12 @@ export async function performDraw(
   // 记录幂等 token（仅当提供了 clientToken）
   if (clientToken) {
     await insertDrawToken(db, clientToken, openid);
+  }
+
+  // 任务埋点：抽卡计数（d_draw10 / w_draw70）；全服保底亲历成就。
+  await bumpQuestProgress(db, openid, 'draw', times);
+  if (serverPityTriggered) {
+    await bumpQuestProgress(db, openid, 'server_pity', 1);
   }
 
   return {

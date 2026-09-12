@@ -29,6 +29,8 @@ interface UserRow {
   total_draws: number;
   pk_win: number;
   pk_lose: number;
+  pk_reward_date: string | null;
+  pk_reward_wins: number;
   last_daily_at: string | null;
   created_at: number;
   updated_at: number;
@@ -47,6 +49,8 @@ export function parseUser(row: UserRow): User {
     total_draws: row.total_draws || 0,
     pk_win: row.pk_win || 0,
     pk_lose: row.pk_lose || 0,
+    pk_reward_date: row.pk_reward_date ?? null,
+    pk_reward_wins: row.pk_reward_wins || 0,
     last_daily_at: row.last_daily_at ?? null,
     created_at: row.created_at,
     updated_at: row.updated_at,
@@ -79,6 +83,8 @@ export async function createUser(
     total_draws: 0,
     pk_win: 0,
     pk_lose: 0,
+    pk_reward_date: null,
+    pk_reward_wins: 0,
     last_daily_at: null,
     created_at: now,
     updated_at: now,
@@ -87,8 +93,8 @@ export async function createUser(
     .prepare(
       `INSERT INTO users
         (openid, nick_name, avatar, wallet, inventory, codex, pity, power,
-         total_draws, pk_win, pk_lose, last_daily_at, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         total_draws, pk_win, pk_lose, pk_reward_date, pk_reward_wins, last_daily_at, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       openid,
@@ -103,6 +109,8 @@ export async function createUser(
       0,
       0,
       null,
+      0,
+      null,
       now,
       now,
     )
@@ -115,7 +123,7 @@ export async function saveUser(db: D1Database, user: User): Promise<void> {
     .prepare(
       `UPDATE users SET
          nick_name=?, avatar=?, wallet=?, inventory=?, codex=?, pity=?, power=?,
-         total_draws=?, pk_win=?, pk_lose=?, last_daily_at=?, updated_at=?
+         total_draws=?, pk_win=?, pk_lose=?, pk_reward_date=?, pk_reward_wins=?, last_daily_at=?, updated_at=?
        WHERE openid=?`,
     )
     .bind(
@@ -129,6 +137,8 @@ export async function saveUser(db: D1Database, user: User): Promise<void> {
       user.total_draws || 0,
       user.pk_win || 0,
       user.pk_lose || 0,
+      user.pk_reward_date ?? null,
+      user.pk_reward_wins || 0,
       user.last_daily_at ?? null,
       user.updated_at,
       user.openid,
@@ -149,12 +159,14 @@ export async function findOtherUserByNickname(
   return row ?? null;
 }
 
-// 账号注销：清空该用户的档案、抽卡记录与幂等 token（排行榜快照由调用方另行失效）。
+// 账号注销：清空该用户的档案、抽卡记录、幂等 token、任务进度与塔状态（排行榜快照由调用方另行失效）。
 export async function deleteUser(db: D1Database, openid: string): Promise<void> {
   await db.batch([
     db.prepare('DELETE FROM users WHERE openid = ?').bind(openid),
     db.prepare('DELETE FROM history WHERE openid = ?').bind(openid),
     db.prepare('DELETE FROM draw_tokens WHERE openid = ?').bind(openid),
+    db.prepare('DELETE FROM quest_progress WHERE openid = ?').bind(openid),
+    db.prepare('DELETE FROM tower_state WHERE openid = ?').bind(openid),
   ]);
 }
 

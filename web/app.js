@@ -12,6 +12,8 @@ import { ratesView } from './views/rates.js';
 import { profileView } from './views/profile.js';
 import { leaderboardView } from './views/leaderboard.js';
 import { pkView } from './views/pk.js';
+import { questsView } from './views/quests.js';
+import { towerView } from './views/tower.js';
 
 const VIEWS = {
   gallery: galleryView,
@@ -24,6 +26,8 @@ const VIEWS = {
   profile: profileView,
   leaderboard: leaderboardView,
   pk: pkView,
+  quests: questsView,
+  tower: towerView,
 };
 
 const TITLES = {
@@ -37,6 +41,8 @@ const TITLES = {
   profile: '我的',
   leaderboard: '排行榜',
   pk: '对战',
+  quests: '任务',
+  tower: '试炼塔',
 };
 
 const TABS = [
@@ -58,6 +64,8 @@ const TAB_OF = {
   history: 'history',
   leaderboard: 'leaderboard',
   pk: 'leaderboard',
+  quests: 'gallery',
+  tower: 'gallery',
   profile: 'profile',
 };
 

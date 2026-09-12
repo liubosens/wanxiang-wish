@@ -1,4 +1,5 @@
 import * as save from '../core/save.js';
+import * as api from '../core/api.js';
 import { go } from '../core/router.js';
 import { esc } from '../core/ui.js';
 
@@ -8,9 +9,51 @@ const SCENES = [
   { route: 'machine', title: '王者 · 荣耀积攒', desc: 'C2 权重转盘 · 积分兑换指定 UR' },
 ];
 
+function fmtEnd(endAt) {
+  const d = new Date(endAt);
+  return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
 export async function galleryView(root) {
   const w = save.getSave().wallet;
   const power = save.getSave().meta.power || 0;
+
+  // 限时活动横幅（云端模式；活动判定在服务端，这里只展示）
+  let eventsHtml = '';
+  if (api.isCloud()) {
+    try {
+      const ev = await api.fetchEvents();
+      if (ev) {
+        const active = (ev.active || [])
+          .map(
+            (e) => `
+          <div class="row between">
+            <span>🔥 ${esc(e.title)}</span>
+            <span class="muted small">${fmtEnd(e.endAt)} 结束</span>
+          </div>`,
+          )
+          .join('');
+        const upcoming = (ev.upcoming || [])
+          .map(
+            (e) => `
+          <div class="row between muted">
+            <span>📅 ${esc(e.title)}</span>
+            <span class="small">${fmtEnd(e.startAt)} 开始</span>
+          </div>`,
+          )
+          .join('');
+        if (active || upcoming) {
+          eventsHtml = `
+          <div class="card">
+            <div class="title">限时活动</div>
+            ${active}${upcoming}
+          </div>`;
+        }
+      }
+    } catch {
+      // 活动拉取失败不阻塞大厅
+    }
+  }
 
   root.innerHTML = `
     <div class="card">
@@ -24,6 +67,8 @@ export async function galleryView(root) {
       </div>
     </div>
 
+    ${eventsHtml}
+
     ${SCENES.map(
       (s) => `
       <div class="card tappable" data-route="${s.route}">
@@ -32,6 +77,16 @@ export async function galleryView(root) {
       </div>
     `,
     ).join('')}
+
+    <div class="card tappable" data-route="quests">
+      <div class="title">每日任务与成就</div>
+      <div class="muted">每日/每周任务领资源，全勤宝箱发进阶石（云端模式）</div>
+    </div>
+
+    <div class="card tappable" data-route="tower">
+      <div class="title">试炼塔</div>
+      <div class="muted">50 层爬塔 PVE，每 5 层首通发进阶石（云端模式）</div>
+    </div>
 
     <button class="btn-ghost btn-block" data-route="rates">查看概率公示</button>
     <div class="card muted small">

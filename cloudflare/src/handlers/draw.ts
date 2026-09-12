@@ -24,7 +24,7 @@ export async function drawHandler(c: Context<AppEnv>) {
   const clientToken = typeof body.clientToken === 'string' ? body.clientToken : undefined;
 
   try {
-    const result = await performDraw(c.env.DB, openid, poolId, times, clientToken);
+    const result = await performDraw(c.env.DB, openid, poolId, times, clientToken, c.env.KV);
     return c.json(result);
   } catch (err) {
     if (err instanceof DrawError) {

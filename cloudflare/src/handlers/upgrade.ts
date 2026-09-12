@@ -2,6 +2,7 @@ import type { Context } from 'hono';
 import type { AppEnv } from '../types';
 import { getUser, saveUser } from '../db';
 import { computePower, upgradeCost } from '../power';
+import { bumpQuestProgress } from '../services/quests';
 
 const MAX_STAR = 5;
 
@@ -38,6 +39,9 @@ export async function upgradeHandler(c: Context<AppEnv>) {
   user.power = computePower(user.inventory);
   user.updated_at = Date.now();
   await saveUser(c.env.DB, user);
+
+  // 任务埋点：升星计数（d_upgrade1）
+  await bumpQuestProgress(c.env.DB, openid, 'upgrade', 1);
 
   return c.json({
     item: { itemId, name: inv.name, rarity: inv.rarity, star: inv.star },

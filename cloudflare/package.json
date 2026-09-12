@@ -9,7 +9,9 @@
     "deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit",
     "migrate:local": "wrangler d1 execute wanxiang-wish --local --file=./migrations/0001_init.sql",
-    "migrate:remote": "wrangler d1 execute wanxiang-wish --remote --file=./migrations/0001_init.sql"
+    "migrate:remote": "wrangler d1 execute wanxiang-wish --remote --file=./migrations/0001_init.sql",
+    "migrate:0002": "wrangler d1 execute wanxiang-wish --remote --file=./migrations/0002_account.sql",
+    "migrate:0003": "wrangler d1 execute wanxiang-wish --remote --file=./migrations/0003_expansion.sql"
   },
   "dependencies": {
     "hono": "^4.6.14"

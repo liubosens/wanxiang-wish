@@ -1,8 +1,10 @@
 import * as save from '../core/save.js';
 import * as api from '../core/api.js';
 import { esc, toast, pct } from '../core/ui.js';
+import { bondStates, bondBonusSum, BOND_CAP } from '../core/bonds-config.js';
 
-const RARITY_ORDER = { UR: 0, SR: 1, R: 2 };
+// 稀有度排序权重（背包列表用）：UR > SSR > SR > R。
+const RARITY_ORDER = { UR: 0, SSR: 1, SR: 2, R: 3 };
 
 export async function inventoryView(root) {
   let busy = false;
@@ -43,11 +45,43 @@ export async function inventoryView(root) {
           (b.star || 0) - (a.star || 0),
       );
 
+    // 羁绊：拥有即激活，由本地 inventory 实时推导（云端模式下 save 为服务端镜像，口径一致）
+    const bonds = bondStates(data.inventory);
+    const activeBonus = Math.min(bondBonusSum(data.inventory), BOND_CAP);
+    const byWorld = bonds.reduce((m, b) => {
+      (m[b.worldName] = m[b.worldName] || []).push(b);
+      return m;
+    }, {});
+    const bondHtml = Object.keys(byWorld)
+      .map((worldName) => {
+        const rows = byWorld[worldName]
+          .map(
+            (b) => `
+            <div class="row between">
+              <span class="${b.activated ? '' : 'muted'}">${esc(b.name)}
+                <span class="muted small">（${b.itemIds.length} 张${b.activated ? '' : ` · 缺 ${b.itemIds.length - b.ownedCount}`}）</span>
+              </span>
+              <span class="${b.activated ? '' : 'muted'}">${b.activated ? `+${Math.round(b.bonus * 100)}%` : '未激活'}</span>
+            </div>`,
+          )
+          .join('');
+        return `<div class="muted small" style="margin-top:8px">${esc(worldName)}</div>${rows}`;
+      })
+      .join('');
+
     root.innerHTML = `
       <div class="card">
         <div class="title">背包</div>
-        <div class="muted">图鉴已点亮 ${codexCount} 种 ｜ 战力 ${data.meta.power || 0}</div>
+        <div class="muted">图鉴已点亮 ${codexCount} 种 ｜ 战力 ${data.meta.power || 0}${activeBonus ? `（羁绊 +${Math.round(activeBonus * 100)}%）` : ''}</div>
         <div class="muted">碎片 ${wallet.fragments} ｜ 进阶石 ${wallet.stone}</div>
+      </div>
+
+      <div class="card">
+        <div class="row between">
+          <div class="title">图鉴羁绊</div>
+          <div class="muted small">总加成 +${Math.round(activeBonus * 100)}% ｜ 上限 ${Math.round(BOND_CAP * 100)}%</div>
+        </div>
+        ${bondHtml}
       </div>
 
       ${

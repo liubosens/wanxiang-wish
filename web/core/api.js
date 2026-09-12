@@ -167,6 +167,69 @@ export async function deleteAccount() {
   return { ok: true };
 }
 
+// ---------------------------------------------------------------- 任务/成就
+
+// 任务/成就状态（服务端唯一真相源）。本地模式无任务系统，返回 null 由视图层提示。
+export async function fetchQuests() {
+  if (!isCloud()) return null;
+  return request('/api/quests');
+}
+
+// 领取任务奖励（幂等，重复领取返回当前态）。
+export async function claimQuest(questId) {
+  if (!isCloud()) return null;
+  const data = await request('/api/quests/claim', { method: 'POST', body: { questId } });
+  if (data.wallet) {
+    save.update((s) => {
+      s.wallet = { ...s.wallet, ...data.wallet };
+    });
+  }
+  return data;
+}
+
+// ---------------------------------------------------------------- 试炼塔
+
+// 塔状态 + 下一层守将。本地模式返回 null。
+export async function fetchTower() {
+  if (!isCloud()) return null;
+  return request('/api/tower');
+}
+
+// 挑战下一层（clientToken 幂等防弱网双扣次数）。
+export async function challengeTower() {
+  if (!isCloud()) return null;
+  const data = await request('/api/tower/challenge', {
+    method: 'POST',
+    body: { clientToken: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}` },
+  });
+  if (data.wallet) {
+    save.update((s) => {
+      s.wallet = { ...s.wallet, ...data.wallet };
+    });
+  }
+  return data;
+}
+
+// 每日扫荡已通最高层 1 次。
+export async function sweepTower() {
+  if (!isCloud()) return null;
+  const data = await request('/api/tower/sweep', { method: 'POST' });
+  if (data.wallet) {
+    save.update((s) => {
+      s.wallet = { ...s.wallet, ...data.wallet };
+    });
+  }
+  return data;
+}
+
+// ---------------------------------------------------------------- 限时活动
+
+// 当前生效活动 + 未来 7 天预告（仅展示用；活动生效判定在服务端结算点内联）。
+export async function fetchEvents() {
+  if (!isCloud()) return null;
+  return request('/api/events');
+}
+
 // ---------------------------------------------------------------- 抽卡
 
 export async function draw({ poolId, times }) {

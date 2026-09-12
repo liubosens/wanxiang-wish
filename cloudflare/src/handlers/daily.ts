@@ -1,6 +1,7 @@
 import type { Context } from 'hono';
 import type { AppEnv } from '../types';
 import { getUser, saveUser } from '../db';
+import { getActiveEvent } from '../services/events';
 
 // 每日补给奖励（服务端权威，客户端不可伪造）。与本地模式 claimDaily 数值一致。
 const REWARDS: Record<string, number> = {
@@ -18,6 +19,7 @@ function todayCN(): string {
 }
 
 // POST /api/daily - 服务端每日签到。同一自然日只能领一次。
+// festival_daily 活动期：payload.dailyRewards 整包覆盖 REWARDS（events-spec §1.1）。
 export async function dailyHandler(c: Context<AppEnv>) {
   const openid = c.get('openid');
   const user = await getUser(c.env.DB, openid);
@@ -33,7 +35,25 @@ export async function dailyHandler(c: Context<AppEnv>) {
     });
   }
 
-  for (const [key, amount] of Object.entries(REWARDS)) {
+  // 活动覆盖：读到的活动版本即结算版本（同 saveUser 事务口径，events-spec §7.4）
+  let rewards = REWARDS;
+  let eventTitle: string | null = null;
+  const festival = await getActiveEvent(c.env.DB, 'festival_daily', c.env.KV);
+  const override = festival?.payload?.dailyRewards;
+  if (festival && override && typeof override === 'object' && !Array.isArray(override)) {
+    // 护栏：只保留正整数奖励项，非法项丢弃
+    const clean: Record<string, number> = {};
+    for (const [k, v] of Object.entries(override as Record<string, unknown>)) {
+      const n = Number(v);
+      if (Number.isInteger(n) && n > 0 && n <= 999) clean[k] = n;
+    }
+    if (Object.keys(clean).length > 0) {
+      rewards = clean;
+      eventTitle = festival.title;
+    }
+  }
+
+  for (const [key, amount] of Object.entries(rewards)) {
     user.wallet[key] = (user.wallet[key] ?? 0) + amount;
   }
   user.last_daily_at = today;
@@ -42,7 +62,8 @@ export async function dailyHandler(c: Context<AppEnv>) {
 
   return c.json({
     claimed: true,
-    rewards: REWARDS,
+    rewards,
+    event: eventTitle,
     wallet: user.wallet,
     lastDailyAt: today,
   });
