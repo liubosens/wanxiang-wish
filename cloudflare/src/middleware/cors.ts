@@ -9,7 +9,7 @@ export const corsMiddleware = createMiddleware<AppEnv>(async (c, next) => {
   const origin = c.req.header('Origin') || '*';
   c.header('Access-Control-Allow-Origin', origin);
   c.header('Vary', 'Origin');
-  c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  c.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   c.header('Access-Control-Max-Age', '86400');
 

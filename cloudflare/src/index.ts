@@ -11,6 +11,9 @@ import { leaderboardHandler } from './handlers/leaderboard';
 import { exchangeHandler } from './handlers/exchange';
 import { upgradeHandler } from './handlers/upgrade';
 import { pkHandler } from './handlers/pk';
+import { profileHandler } from './handlers/profile';
+import { dailyHandler } from './handlers/daily';
+import { accountHandler } from './handlers/account';
 
 // 万象祈愿 服务端权威后端入口。
 // 抽卡概率 / 保底 / 战力全部在服务端计算，客户端不可信。
@@ -32,6 +35,11 @@ app.get('/api/leaderboard', authMiddleware, leaderboardHandler);
 app.post('/api/exchange', authMiddleware, exchangeHandler);
 app.post('/api/upgrade', authMiddleware, upgradeHandler);
 app.post('/api/pk', authMiddleware, pkHandler);
+
+// 账号系统：改昵称/头像、每日签到、注销。
+app.post('/api/profile', authMiddleware, profileHandler);
+app.post('/api/daily', authMiddleware, dailyHandler);
+app.delete('/api/account', authMiddleware, accountHandler);
 
 // 兜底：未捕获异常统一序列化为 JSON 500，避免泄露堆栈。
 app.onError((err, c) => {

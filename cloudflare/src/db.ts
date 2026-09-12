@@ -20,11 +20,16 @@ export function getInitialWallet(): Wallet {
 interface UserRow {
   openid: string;
   nick_name: string | null;
+  avatar: string | null;
   wallet: string;
   inventory: string;
   codex: string;
   pity: string;
   power: number;
+  total_draws: number;
+  pk_win: number;
+  pk_lose: number;
+  last_daily_at: string | null;
   created_at: number;
   updated_at: number;
 }
@@ -33,11 +38,16 @@ export function parseUser(row: UserRow): User {
   return {
     openid: row.openid,
     nick_name: row.nick_name,
+    avatar: row.avatar,
     wallet: JSON.parse(row.wallet) as Wallet,
     inventory: JSON.parse(row.inventory) as Inventory,
     codex: JSON.parse(row.codex) as Codex,
     pity: JSON.parse(row.pity) as Pity,
     power: row.power,
+    total_draws: row.total_draws || 0,
+    pk_win: row.pk_win || 0,
+    pk_lose: row.pk_lose || 0,
+    last_daily_at: row.last_daily_at ?? null,
     created_at: row.created_at,
     updated_at: row.updated_at,
   };
@@ -60,26 +70,39 @@ export async function createUser(
   const user: User = {
     openid,
     nick_name: nickName,
+    avatar: null,
     wallet: getInitialWallet(),
     inventory: {},
     codex: {},
     pity: {},
     power: 0,
+    total_draws: 0,
+    pk_win: 0,
+    pk_lose: 0,
+    last_daily_at: null,
     created_at: now,
     updated_at: now,
   };
   await db
     .prepare(
-      'INSERT INTO users (openid, nick_name, wallet, inventory, codex, pity, power, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      `INSERT INTO users
+        (openid, nick_name, avatar, wallet, inventory, codex, pity, power,
+         total_draws, pk_win, pk_lose, last_daily_at, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       openid,
       nickName,
+      user.avatar,
       JSON.stringify(user.wallet),
       JSON.stringify(user.inventory),
       JSON.stringify(user.codex),
       JSON.stringify(user.pity),
       0,
+      0,
+      0,
+      0,
+      null,
       now,
       now,
     )
@@ -90,19 +113,49 @@ export async function createUser(
 export async function saveUser(db: D1Database, user: User): Promise<void> {
   await db
     .prepare(
-      'UPDATE users SET nick_name=?, wallet=?, inventory=?, codex=?, pity=?, power=?, updated_at=? WHERE openid=?',
+      `UPDATE users SET
+         nick_name=?, avatar=?, wallet=?, inventory=?, codex=?, pity=?, power=?,
+         total_draws=?, pk_win=?, pk_lose=?, last_daily_at=?, updated_at=?
+       WHERE openid=?`,
     )
     .bind(
       user.nick_name,
+      user.avatar,
       JSON.stringify(user.wallet),
       JSON.stringify(user.inventory),
       JSON.stringify(user.codex),
       JSON.stringify(user.pity),
       user.power,
+      user.total_draws || 0,
+      user.pk_win || 0,
+      user.pk_lose || 0,
+      user.last_daily_at ?? null,
       user.updated_at,
       user.openid,
     )
     .run();
+}
+
+// 昵称唯一性：忽略大小写与首尾空格做精确匹配，排除自己。
+export async function findOtherUserByNickname(
+  db: D1Database,
+  nickName: string,
+  exceptOpenid: string,
+): Promise<{ openid: string } | null> {
+  const row = await db
+    .prepare('SELECT openid FROM users WHERE nick_name = ? COLLATE NOCASE AND openid <> ? LIMIT 1')
+    .bind(nickName, exceptOpenid)
+    .first<{ openid: string }>();
+  return row ?? null;
+}
+
+// 账号注销：清空该用户的档案、抽卡记录与幂等 token（排行榜快照由调用方另行失效）。
+export async function deleteUser(db: D1Database, openid: string): Promise<void> {
+  await db.batch([
+    db.prepare('DELETE FROM users WHERE openid = ?').bind(openid),
+    db.prepare('DELETE FROM history WHERE openid = ?').bind(openid),
+    db.prepare('DELETE FROM draw_tokens WHERE openid = ?').bind(openid),
+  ]);
 }
 
 export interface HistoryRow {
@@ -195,11 +248,11 @@ export async function insertDrawToken(
 export async function getLeaderboardTop(
   db: D1Database,
   limit: number,
-): Promise<{ openid: string; nick_name: string | null; power: number }[]> {
+): Promise<{ openid: string; nick_name: string | null; avatar: string | null; power: number }[]> {
   const res = await db
-    .prepare('SELECT openid, nick_name, power FROM users ORDER BY power DESC LIMIT ?')
+    .prepare('SELECT openid, nick_name, avatar, power FROM users ORDER BY power DESC LIMIT ?')
     .bind(limit)
-    .all<{ openid: string; nick_name: string | null; power: number }>();
+    .all<{ openid: string; nick_name: string | null; avatar: string | null; power: number }>();
   return res.results;
 }
 

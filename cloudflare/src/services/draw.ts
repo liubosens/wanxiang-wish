@@ -86,6 +86,9 @@ export async function performDraw(
   // 扣费
   user.wallet[costItem] = balance - totalCost;
 
+  // 累计抽卡次数（用于账号数据概览）
+  user.total_draws = (user.total_draws || 0) + times;
+
   // 积分卡池（C2）：每抽累加荣耀积分，用于指定 UR 兑换。
   if (pool.pointsPerDraw) {
     user.wallet.point_wz = (user.wallet.point_wz ?? 0) + pool.pointsPerDraw * times;

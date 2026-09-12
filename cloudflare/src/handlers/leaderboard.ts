@@ -25,6 +25,7 @@ export async function leaderboardHandler(c: Context<AppEnv>) {
       rank: i + 1,
       id: u.openid,
       name: u.nick_name || '玩家',
+      avatar: u.avatar ?? null,
       power: u.power,
       isMe: u.openid === openid,
     }));

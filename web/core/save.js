@@ -28,6 +28,7 @@ const DEFAULT = {
     pkWin: 0,
     pkLose: 0,
     nickname: '',
+    avatar: '',
   },
 };
 
@@ -77,8 +78,10 @@ export function reset() {
 }
 
 export function todayStr() {
+  // 补零成 YYYY-MM-DD，与服务端（UTC+8）的签到日口径一致。
   const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
 let dailyClaimedFlag;
@@ -120,6 +123,12 @@ export function syncFromServer(user) {
     s.pity = user.pity || {};
     s.meta.power = user.power || 0;
     if (user.nick_name) s.meta.nickname = user.nick_name;
+    if (user.avatar) s.meta.avatar = user.avatar;
+    if (typeof user.total_draws === 'number') s.meta.totalDraws = user.total_draws;
+    if (typeof user.pk_win === 'number') s.meta.pkWin = user.pk_win;
+    if (typeof user.pk_lose === 'number') s.meta.pkLose = user.pk_lose;
+    if (user.created_at) s.meta.createdAt = user.created_at;
+    if (user.last_daily_at) s.meta.lastDailyAt = user.last_daily_at;
   });
 }
 

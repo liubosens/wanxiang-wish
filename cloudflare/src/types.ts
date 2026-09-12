@@ -34,11 +34,16 @@ export type Codex = Record<string, CodexEntry>;
 export interface User {
   openid: string;
   nick_name: string | null;
+  avatar: string | null;
   wallet: Wallet;
   inventory: Inventory;
   codex: Codex;
   pity: Pity;
   power: number;
+  total_draws: number;
+  pk_win: number;
+  pk_lose: number;
+  last_daily_at: string | null;
   created_at: number;
   updated_at: number;
 }
@@ -47,6 +52,7 @@ export interface LeaderboardRow {
   rank: number;
   id: string;
   name: string;
+  avatar: string | null;
   power: number;
   isMe: boolean;
 }

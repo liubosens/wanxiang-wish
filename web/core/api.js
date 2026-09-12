@@ -40,6 +40,23 @@ export function getDeviceId() {
   return id;
 }
 
+// 切换到指定账号（用账号 ID 恢复），清掉旧 token 以便下次 login 重新签发。
+export function setDeviceId(id) {
+  const clean = String(id || '').trim();
+  if (!clean) return getDeviceId();
+  storage.write(DEVICE_KEY, clean);
+  storage.remove(TOKEN_KEY);
+  return clean;
+}
+
+// 在本机生成一个全新账号（deviceId 换新），并退出当前登录态。
+export function newDeviceId() {
+  const id = `dev_${randomId()}`;
+  storage.write(DEVICE_KEY, id);
+  storage.remove(TOKEN_KEY);
+  return id;
+}
+
 const CURRENCY_IDS = ['wish_stone', 'chest_key', 'machine_coin', 'dust'];
 const CURRENCY_GAIN = { wish_stone: 1, chest_key: 1, machine_coin: 2, dust: 50 };
 
@@ -111,6 +128,43 @@ export async function refreshMe() {
   const data = await request('/api/me');
   save.syncFromServer(data.user);
   return save.getSave();
+}
+
+// ---------------------------------------------------------------- 账号
+
+// 修改昵称 / 头像。云端持久化并让排行榜立即生效；本地仅写入本机存档。
+export async function updateProfile({ nickname, avatar } = {}) {
+  if (!isCloud()) {
+    save.update((s) => {
+      if (typeof nickname === 'string') s.meta.nickname = nickname;
+      if (typeof avatar === 'string') s.meta.avatar = avatar;
+    });
+    return save.getSave();
+  }
+  const data = await request('/api/profile', { method: 'POST', body: { nickname, avatar } });
+  save.syncFromServer(data.user);
+  return data.user;
+}
+
+// 每日签到。云端由服务端权威发放并记录自然日；本地走存档内的 claimDaily。
+export async function claimDaily() {
+  if (!isCloud()) {
+    const data = save.claimDaily();
+    return { claimed: data._dailyClaimed !== false, wallet: data.wallet, lastDailyAt: data.meta.lastDailyAt };
+  }
+  const data = await request('/api/daily', { method: 'POST' });
+  save.update((s) => {
+    if (data.wallet) s.wallet = { ...s.wallet, ...data.wallet };
+    if (data.lastDailyAt) s.meta.lastDailyAt = data.lastDailyAt;
+  });
+  return data;
+}
+
+// 账号注销：清空服务端档案（不可逆）。
+export async function deleteAccount() {
+  if (!isCloud()) return { ok: true };
+  await request('/api/account', { method: 'DELETE' });
+  return { ok: true };
 }
 
 // ---------------------------------------------------------------- 抽卡

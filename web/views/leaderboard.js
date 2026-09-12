@@ -52,6 +52,7 @@ export async function leaderboardView(root) {
                      <span class="rank ${
                        r.rank <= 3 ? `rank-${r.rank}` : ''
                      }">${r.rank}</span>
+                     <span class="lb-avatar">${esc(r.avatar || '🙂')}</span>
                      <span class="name ${r.isMe ? 'me' : ''}">${esc(r.name)}${
                        r.isMe && r.name !== '你' ? '（你）' : ''
                      }</span>

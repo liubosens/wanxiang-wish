@@ -41,6 +41,9 @@ export async function pkHandler(c: Context<AppEnv>) {
   if (win) {
     user.wallet.wish_stone = (user.wallet.wish_stone ?? 0) + WIN_REWARD_STONE;
     user.wallet.stone = (user.wallet.stone ?? 0) + WIN_REWARD_ADVANCE;
+    user.pk_win = (user.pk_win || 0) + 1;
+  } else {
+    user.pk_lose = (user.pk_lose || 0) + 1;
   }
   user.updated_at = Date.now();
   await saveUser(c.env.DB, user);
@@ -52,5 +55,7 @@ export async function pkHandler(c: Context<AppEnv>) {
     oppName,
     oppPower,
     wallet: user.wallet,
+    pkWin: user.pk_win,
+    pkLose: user.pk_lose,
   });
 }
