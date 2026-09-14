@@ -8,10 +8,11 @@ Page({
   },
   refresh() {
     const data = save.getSave();
-    const rank = { UR: 0, SR: 1, R: 2 };
+    // 稀有度排序权重：UR > SSR > SR > R（与 H5 端一致）
+    const rank = { UR: 0, SSR: 1, SR: 2, R: 3 };
     const items = Object.keys(data.inventory)
       .map((id) => ({ itemId: id, ...data.inventory[id] }))
-      .sort((a, b) => (rank[a.rarity] || 9) - (rank[b.rarity] || 9));
+      .sort((a, b) => (rank[a.rarity] ?? 9) - (rank[b.rarity] ?? 9));
 
     // 附带升星预览与可升星判定
     items.forEach((it) => {
